@@ -55,11 +55,6 @@ void stopDraw() //Stops the turtles from drawing lines when they move (maybe unn
   pen_client3.call(pen_srv);
 }
 
-float speed(0.5); // Linear velocity (m/s)
-float turn(1.0); // Angular velocity (rad/s)
-float x(0), y(0), z(0), th(0); // Forward/backward/neutral direction vars
-char key(' ');
-
 //From https://github.com/methylDragon/teleop_twist_keyboard_cpp/blob/525fb108bbe7ad2527b82cc9ebc0d461b1bdadf3/src/teleop_twist_keyboard.cpp#L81
 //For non-blocking keyboard inputs
 int getch(void)
@@ -108,6 +103,7 @@ ros::init(argc,argv, "Walls");
 
   while(ros::ok())
   {
+    
     key = getch();
     switch (key)
     {
