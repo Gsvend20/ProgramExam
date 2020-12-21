@@ -6,7 +6,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h> //Turtlesim movement
 
-#include <sstream> //Why is this here?
+//#include <sstream> //Why is this here?
 
 #include <iostream>
 
@@ -100,37 +100,40 @@ ros::init(argc,argv, "Walls");
   ros::Publisher turtle3Move = n.advertise<geometry_msgs::Twist>("/turtle3/cmd_vel", 1);
 
   int key;
+  printf("Control turtles with w/s and o/l \n\nPress ctrl+c to quit\n");
 
   while(ros::ok())
   {
-    
     key = getch();
     switch (key)
     {
       case 119: //119 = w
         turtle2Twist.linear.x = 1;
+        turtle2Move.publish(turtle2Twist);
         break;
 
       case 115: //115 = s
         turtle2Twist.linear.x = -1;
+        turtle2Move.publish(turtle2Twist);
         break;
 
       case 111: //111 = o
         turtle3Twist.linear.x = 1;
+        turtle3Move.publish(turtle3Twist);
         break;
 
       case 108: //108 = l
         turtle3Twist.linear.x = -1;
+        turtle3Move.publish(turtle3Twist);
         break;
 
       case 3: //Exit program by pressing ctrl+c
         return 0;
 
       default:
-        std::cout << key << std::endl;
+        std::cout << "Error! Wrong key pressed(" << key << ")" << std::endl
+        << "Press w/s to control first turtle or o/l to control the second." << std::endl;
     }
-    turtle2Move.publish(turtle2Twist);
-    turtle3Move.publish(turtle3Twist);
     ros::spinOnce();
   }
   return 0;
