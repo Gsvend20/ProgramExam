@@ -32,8 +32,8 @@ using namespace std;
 
 
 
-int main(int argc, char const *argv[]){
-ros::init(argc,argv, "Ping");
+int main(int argc, char *argv[]){
+ros::init(argc,argv, "Ball");
 
     while(ros::ok()){
 
