@@ -52,6 +52,10 @@ void respawn(){
     spawn_msg.request.name = "turtle1";
     spawn_msg.request.x = 5.5;
     spawn_msg.request.y = 5.5;
+    int randomAngle = rand() % 360 + 1;
+    ROS_INFO("Random angle: %d", randomAngle);
+    double header = randomAngle*M_PI/180;
+    spawn_msg.request.theta = header;
     spawn_client.call(spawn_msg);
 
     turtlesim::SetPen pen_srv;
@@ -59,57 +63,63 @@ void respawn(){
     pen_client.call(pen_srv);   
 }
 };
-// Creating Publisher and subscriber 
-
-//FUNCTION CALLS
-
-//SUB CALLBACKS
 
 int main(int argc, char *argv[]){
 ros::init(argc,argv, "Ball");
-ball asslugter;
+ball moving_balls;
+srand (time(NULL));
 ros::Rate loop_rate(10);
+double speed = 1.0;
 
 turtlesim::Kill kill_msg;
 kill_msg.request.name = "turtle1";
-asslugter.kill_client.call(kill_msg);
+moving_balls.kill_client.call(kill_msg);
+
+
+int randomAngle = rand() % 360 + 1;
+ROS_INFO("Random angle: %d", randomAngle);
+double header = randomAngle*M_PI/180;
 
 turtlesim::Spawn spawn_msg;
 spawn_msg.request.name = "turtle1";
 spawn_msg.request.x = 5.5;
 spawn_msg.request.y = 5.5;
-spawn_msg.request.theta = M_PI/2;
-asslugter.spawn_client.call(spawn_msg);
+spawn_msg.request.theta = header;
+moving_balls.spawn_client.call(spawn_msg);
 
 turtlesim::SetPen pen_srv;
 pen_srv.request.off = true;
-asslugter.pen_client.call(pen_srv);
+moving_balls.pen_client.call(pen_srv);
 
 for (int i = 0; i < 10; i++)
 {
-    asslugter.move(1.0,0.0);
+    moving_balls.move(1.0,0.0);
     loop_rate.sleep();
 }
 
     while(ros::ok()){
-        std::cout << "start pos \n" << asslugter.my_pose.theta;
-        if(asslugter.my_pose.x > 10.9 || asslugter.my_pose.x < 0.1 &! asslugter.my_pose.x == 5.5){
-            asslugter.respawn();
-            ros::Duration(0.5).sleep(); //these are to fix potential bugs when a turtle is spawned in
+        if(moving_balls.my_pose.x > 10.9 || moving_balls.my_pose.x < 0.2){
+            moving_balls.respawn();
+            ros::Duration(1.0).sleep(); //these are to fix potential bugs when a turtle is spawned 
+            double speed = 1.0;
         }
 
-        if (asslugter.my_pose.y > 10.9 || asslugter.my_pose.y < 0.1 &! asslugter.my_pose.y == 0.0)
+        if (moving_balls.my_pose.y > 10.9 || moving_balls.my_pose.y < 0.1 &! moving_balls.my_pose.y == 0.0)
         {
-            double targetAngle = M_PI*2 - asslugter.my_pose.theta;
-            asslugter.teleport(asslugter.my_pose.x,asslugter.my_pose.y, targetAngle);
-            std::cout << "start theta \n" << asslugter.my_pose.theta;
-            //ros::Duration(0.5).sleep();//these are to fix potential bugs when a turtle is spawned in
+            double targetAngle = M_PI*2 - moving_balls.my_pose.theta;
+            moving_balls.teleport(moving_balls.my_pose.x,moving_balls.my_pose.y, targetAngle);
+            ros::Duration(0.5).sleep();//these are to fix potential bugs when a turtle is spawned in
         }
-    
-        asslugter.move(1.0,0.0);
+
+        if(contact == true){
+            double targetAngle = M_PI*2 - moving_balls.my_pose.theta;
+            moving_balls.teleport(moving_balls.my_pose.x,moving_balls.my_pose.y, targetAngle);
+            ros::Duration(0.5).sleep();//these are to fix potential bugs when a turtle is spawned in
+            speed = speed + 0.1;
+        }
+
+        moving_balls.move(speed,0.0);
         ros::spinOnce();
         }
-
-    
     return 0;
 }
