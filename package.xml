@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>TestExam</name>
+  <name>testExam</name>
   <version>0.0.0</version>
-  <description>The TestExam package</description>
+  <description>The testExam package</description>
 
   <maintainer email="Gsvend20@student.aau.dk">ros</maintainer>
 
