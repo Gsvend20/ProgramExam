@@ -167,7 +167,7 @@ ros::init(argc,argv, "paddles");
         return 0;
 
       default:
-        std::cout << "\nError! Wrong key pressed (keycode " << key << ")";
+        std::cout << "\n\n\nError! Wrong key pressed (keycode " << key << ")\n\n";
         printUI();
     }
     ros::spinOnce();
