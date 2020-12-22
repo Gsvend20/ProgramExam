@@ -98,6 +98,8 @@ srand (time(NULL));
 ros::Rate loop_rate(10);
 double speed = 1.0;
 
+ros::Duration(2).sleep(); //fix for the launch file
+
 turtlesim::Kill kill_msg;
 kill_msg.request.name = "turtle1";
 moving_balls.kill_client.call(kill_msg);
