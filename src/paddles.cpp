@@ -85,13 +85,8 @@ int getch(void)
   return ch;
 }
 
-<<<<<<< HEAD:src/paddles.cpp
 int main(int argc, char *argv[]){
 ros::init(argc,argv, "paddles");
-=======
-int main(int argc, char *argv[]){ //Where the program starts
-ros::init(argc,argv, "Walls");
->>>>>>> origin/master:src/walls.cpp
 
   ros::NodeHandle n;
   pointer_n = &n;
