@@ -29,7 +29,7 @@ void spawnWalls() //Spawning turtles to control
   turtlesim::Spawn wall_spawn_msg;
 
   //Spawning first wall
-  wall_spawn_msg.request.name = "turtle2";
+  wall_spawn_msg.request.name = "turtle2"; // Declaring variables and giving them values
   wall_spawn_msg.request.x = 1.544445;
   wall_spawn_msg.request.y = 5.544445;
   wall_spawn_msg.request.theta = M_PI/2;
@@ -60,7 +60,7 @@ void stopDraw() //Stops the turtles from drawing lines when they move (maybe unn
 int getch(void)
 {
   int ch;
-  struct termios oldt;
+  struct termios oldt; //Comes from 'termios.h' Is a data structure with terminal information
   struct termios newt;
 
   // Store old settings, and copy to new settings
@@ -85,12 +85,13 @@ int getch(void)
   return ch;
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]){ //Where the program starts
 ros::init(argc,argv, "Walls");
 
   ros::NodeHandle n;
   pointer_n = &n;
 
+//Functioncalls to Draw the walls and stop drawing
   spawnWalls();
   stopDraw();
 
@@ -99,17 +100,17 @@ ros::init(argc,argv, "Walls");
   ros::Publisher turtle2Move = n.advertise<geometry_msgs::Twist>("/turtle2/cmd_vel", 1);
   ros::Publisher turtle3Move = n.advertise<geometry_msgs::Twist>("/turtle3/cmd_vel", 1);
 
-  int key;
-  printf("Control turtles with w/s and o/l \n\nPress ctrl+c to quit\n");
+  int key; //varible declaration
+  printf("Control turtles with w/s and o/l \n\nPress ctrl+c to quit\n"); //A format specifier to print out text via stdout
 
-  while(ros::ok())
+  while(ros::ok()) //loop
   {
     key = getch();
-    switch (key)
+    switch (key) //Beginning of a switch case, used to transfer control to one(or more via 'fall trough') depending on the value of condition
     {
       case 119: //119 = w
-        turtle2Twist.linear.x = 1;
-        turtle2Move.publish(turtle2Twist);
+        turtle2Twist.linear.x = 1; //Define linear.x as 1 for turtle2
+        turtle2Move.publish(turtle2Twist); //And then publish this data for the ____
         break;
 
       case 115: //115 = s
@@ -134,7 +135,7 @@ ros::init(argc,argv, "Walls");
         std::cout << "Error! Wrong key pressed(" << key << ")" << std::endl
         << "Press w/s to control first turtle or o/l to control the second." << std::endl;
     }
-    ros::spinOnce();
+    ros::spinOnce(); // ROS does not call it immediately. ROS only processes callbacks when you use SpinOnce
   }
   return 0;
 }
