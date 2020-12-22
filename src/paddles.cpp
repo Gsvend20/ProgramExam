@@ -5,9 +5,6 @@
 //  *** Created: 03-12-2020***
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h> //Turtlesim movement
-
-//#include <sstream> //Why is this here?
-
 #include <iostream>
 
 //Used for reading keyboard input
@@ -22,14 +19,14 @@
 
 ros::NodeHandle *pointer_n;
 
-void spawnWalls() //Spawning turtles to control
+void spawnPaddles() //Spawning turtles to control
 {
 
   ros::ServiceClient spawn_client = pointer_n->serviceClient<turtlesim::Spawn>("/spawn");
   turtlesim::Spawn wall_spawn_msg;
 
   //Spawning first wall
-  wall_spawn_msg.request.name = "turtle2"; // Declaring variables and giving them values
+  wall_spawn_msg.request.name = "turtle2";
   wall_spawn_msg.request.x = 1.544445;
   wall_spawn_msg.request.y = 5.544445;
   wall_spawn_msg.request.theta = M_PI/2;
@@ -43,7 +40,7 @@ void spawnWalls() //Spawning turtles to control
   spawn_client.call(wall_spawn_msg);
 }
 
-void stopDraw() //Stops the turtles from drawing lines when they move (maybe unneeded)
+void stopDraw() //Stops the turtles from drawing lines when they move
 {
   //Sets up two service clients, one for each wall turtle
   ros::ServiceClient pen_client2 = pointer_n->serviceClient<turtlesim::SetPen>("/turtle2/set_pen");
@@ -91,8 +88,8 @@ ros::init(argc,argv, "paddles");
   ros::NodeHandle n;
   pointer_n = &n;
 
-//Functioncalls to Draw the walls and stop drawing
-  spawnWalls();
+//Functioncalls to Draw the paddles and stop them from drawing while moving
+  spawnPaddles();
   stopDraw();
 
   geometry_msgs::Twist turtle2Twist;
@@ -101,16 +98,16 @@ ros::init(argc,argv, "paddles");
   ros::Publisher turtle3Move = n.advertise<geometry_msgs::Twist>("/turtle3/cmd_vel", 1);
 
   int key; //varible declaration
-  printf("Control turtles with w/s and o/l \n\nPress ctrl+c to quit\n"); //A format specifier to print out text via stdout
+  printf("Control turtles with w/s and o/l \n\nPress ctrl+c to quit\n");
 
-  while(ros::ok()) //loop
+  while(ros::ok())
   {
     key = getch();
-    switch (key) //Beginning of a switch case, used to transfer control to one(or more via 'fall trough') depending on the value of condition
+    switch (key)
     {
       case 119: //119 = w
-        turtle2Twist.linear.x = 1; //Define linear.x as 1 for turtle2
-        turtle2Move.publish(turtle2Twist); //And then publish this data for the ____
+        turtle2Twist.linear.x = 1;
+        turtle2Move.publish(turtle2Twist);
         break;
 
       case 115: //115 = s
@@ -135,7 +132,7 @@ ros::init(argc,argv, "paddles");
         std::cout << "Error! Wrong key pressed(" << key << ")" << std::endl
         << "Press w/s to control first turtle or o/l to control the second." << std::endl;
     }
-    ros::spinOnce(); // ROS does not call it immediately. ROS only processes callbacks when you use SpinOnce
+    ros::spinOnce();
   }
   return 0;
 }
