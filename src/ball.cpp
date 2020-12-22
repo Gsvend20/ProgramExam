@@ -5,6 +5,7 @@
 //  *** Created: 03-12-2020***
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
+#include <std_msgs/Int16.h>
 #include "turtlesim/Pose.h"
 #include <turtlesim/Spawn.h>
 #include <turtlesim/Kill.h>  
@@ -17,6 +18,7 @@ private:
 ros::NodeHandle n;
 
 ros::Publisher vel_pub = n.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 10);
+ros::Publisher point_pub = n.advertise<std_msgs::Int16>("/playerPoints",1);
 ros::ServiceClient teleport_client = n.serviceClient<turtlesim::TeleportAbsolute>("/turtle1/teleport_absolute");
 geometry_msgs::Twist move_msg;
 turtlesim::TeleportAbsolute teleport_msg;
@@ -29,6 +31,7 @@ ros::Subscriber my_pose_sub = n.subscribe("/turtle1/pose",100, &ball::callbackMy
 ros::Subscriber left_pose_sub = n.subscribe("/turtle2/pose",100, &ball::distanceCheck, this);
 ros::Subscriber right_pose_sub = n.subscribe("/turtle3/pose",100, &ball::distanceCheck, this);
 turtlesim::Pose my_pose;
+std_msgs::Int16 playerScoreChange;
 bool contact = false;
 
 void move(double xSpeed, double turnSpeed){
@@ -81,6 +84,11 @@ void respawn(){
     pen_srv.request.off = true;
     pen_client.call(pen_srv);   
 }
+void scoreChange(int player){
+  playerScoreChange.data = player;
+  point_pub.publish(playerScoreChange);
+  ros::spinOnce;
+}
 };
 
 int main(int argc, char *argv[]){
@@ -110,31 +118,24 @@ turtlesim::SetPen pen_srv;
 pen_srv.request.off = true;
 moving_balls.pen_client.call(pen_srv);
 
-std::cout << "\n-------------------------------\nWelcome to Turtlepong!\n\n-------------------------------\nplayer 1 is located on the left \nplayer 2 is located on the right \n-------------------------------\n";
-int player1_points = 0;
-int player2_points = 0;
-
 for (int i = 0; i < 10; i++)
 {
     moving_balls.move(1.0,0.0);
     loop_rate.sleep();
 }
-printf("Current score is \nPlayer 1: %d \nPlayer 2: %d\n", player1_points, player2_points);
 
     while(ros::ok()){
         if(moving_balls.my_pose.x > 10.9 &! moving_balls.my_pose.x == 0.0){
             moving_balls.respawn();
             ros::Duration(1.0).sleep(); //these are to fix potential bugs when a turtle is spawned 
             double speed = 1.0;
-            player1_points++;
-            printf("Current score is \nPlayer 1: %d \nPlayer 2: %d\n", player1_points, player2_points);
+            moving_balls.scoreChange(1);
         }
         if(moving_balls.my_pose.x < 0.2 &! moving_balls.my_pose.x == 0.0){
             moving_balls.respawn();
             ros::Duration(1.0).sleep(); //these are to fix potential bugs when a turtle is spawned 
             double speed = 1.0;
-            player2_points++;
-            printf("Current score is \nPlayer 1: %d \nPlayer 2: %d\n", player1_points, player2_points);
+            moving_balls.scoreChange(2);
         }
 
         if (moving_balls.my_pose.y > 10.9 || moving_balls.my_pose.y < 0.1 &! moving_balls.my_pose.y == 0.0)
