@@ -88,7 +88,7 @@ ros::init(argc,argv, "paddles");
   ros::NodeHandle n;
   pointer_n = &n;
 
-//Functioncalls to Draw the walls and stop drawing
+//Functioncalls to Draw the paddles and stop them from drawing while moving
   spawnPaddles();
   stopDraw();
 
