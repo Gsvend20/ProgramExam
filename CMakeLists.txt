@@ -131,7 +131,7 @@ include_directories(
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(walls src/walls.cpp)
+add_executable(paddles src/paddles.cpp)
 add_executable(ball src/ball.cpp)
 
 ## Rename C++ executable without prefix
@@ -145,7 +145,7 @@ add_executable(ball src/ball.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(walls
+target_link_libraries(paddles
   ${catkin_LIBRARIES}
 )
 
@@ -169,7 +169,7 @@ target_link_libraries(ball
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS walls ball
+install(TARGETS paddles ball
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

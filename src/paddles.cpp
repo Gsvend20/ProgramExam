@@ -86,7 +86,7 @@ int getch(void)
 }
 
 int main(int argc, char *argv[]){
-ros::init(argc,argv, "Walls");
+ros::init(argc,argv, "paddles");
 
   ros::NodeHandle n;
   pointer_n = &n;
