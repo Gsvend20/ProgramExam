@@ -5,6 +5,7 @@
 //  *** Created: 03-12-2020***
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h> //Turtlesim movement
+#include <std_msgs/Int16.h>
 #include <iostream>
 
 //Used for reading keyboard input
@@ -82,13 +83,48 @@ int getch(void)
   return ch;
 }
 
+int player1points = 0;
+int player2points = 0;
+
+void printUI()
+{
+  std::cout << "\n-------------------------------"
+            << "\nWelcome to Turtlepong!"
+            << "\n-------------------------------"
+            << "\nplayer 1 is located on the left"
+            << "\nplayer 2 is located on the right"
+            << "\n-------------------------------"
+            << "\nplayer 1 controls with w / s"
+            << "\nplayer 2 controls with o / l"
+            << "\npress ctrl+c to quit"
+            << "\n-------------------------------"
+            << "\ncurrent score is"
+            << "\nplayer 1: " << player1points
+            << "\nplayer 2: " << player2points;
+}
+
+void playerPointsCallback(const std_msgs::Int16 player)
+{
+  if (player.data == 1)
+  {
+    player1points++;
+  }
+  else if (player.data == 2)
+  {
+    player2points++;
+  }
+  printUI();
+}
+
 int main(int argc, char *argv[]){
 ros::init(argc,argv, "paddles");
 
   ros::NodeHandle n;
   pointer_n = &n;
 
-//Functioncalls to Draw the paddles and stop them from drawing while moving
+  ros::Duration(2).sleep(); //fix for the launch file
+
+  //Functioncalls to Draw the paddles and stop them from drawing while moving
   spawnPaddles();
   stopDraw();
 
@@ -97,9 +133,13 @@ ros::init(argc,argv, "paddles");
   ros::Publisher turtle2Move = n.advertise<geometry_msgs::Twist>("/turtle2/cmd_vel", 1);
   ros::Publisher turtle3Move = n.advertise<geometry_msgs::Twist>("/turtle3/cmd_vel", 1);
 
-  int key; //varible declaration
-  printf("Control turtles with w/s and o/l \n\nPress ctrl+c to quit\n");
+  //Subscriber for point messages from the ball node
+  ros::Subscriber point_sub = n.subscribe("/playerPoints", 1, playerPointsCallback);
 
+  //Function called to print UI in terminal
+  printUI();
+
+  int key; //varible declaration
   while(ros::ok())
   {
     key = getch();
@@ -129,8 +169,8 @@ ros::init(argc,argv, "paddles");
         return 0;
 
       default:
-        std::cout << "Error! Wrong key pressed(" << key << ")" << std::endl
-        << "Press w/s to control first turtle or o/l to control the second." << std::endl;
+        std::cout << "\n\n\nError! Wrong key pressed (keycode " << key << ")\n\n";
+        printUI();
     }
     ros::spinOnce();
   }
