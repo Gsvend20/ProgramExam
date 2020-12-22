@@ -21,12 +21,6 @@ include_directories(
 )
 
 
-<<<<<<< HEAD
-add_executable(walls src/walls.cpp)
-add_executable(ball src/ball.cpp)
-
-target_link_libraries(walls
-=======
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -48,7 +42,6 @@ add_executable(ball src/ball.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(paddles
->>>>>>> 8b5b3f7b82fb5c12ac3c1e85248cac3f0b782b4e
   ${catkin_LIBRARIES}
 )
 
@@ -56,9 +49,6 @@ target_link_libraries(ball
   ${catkin_LIBRARIES}
 )
 
-<<<<<<< HEAD
-install(TARGETS walls ball
-=======
 #############
 ## Install ##
 #############
@@ -76,6 +66,5 @@ install(TARGETS walls ball
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
 install(TARGETS paddles ball
->>>>>>> 8b5b3f7b82fb5c12ac3c1e85248cac3f0b782b4e
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
